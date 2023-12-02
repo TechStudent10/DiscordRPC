@@ -141,20 +141,23 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 			return "insane"; // Dash
 		case 23:
 			return "hard_demon"; // Explorers
+		case 3001:
+			return "hard"; // The Challenge
 	}
 }
 
 std::string getAssetKey(GJGameLevel* level) {
 	int stars = level->m_stars.value();
 	auto difficulty = level->m_difficulty;
+	log::info(std::to_string(level->m_levelID.value()));
 	if (stars == 0) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
 	if (stars == 10) {
 		return convertGJDifficultyDemonToAssetKey(difficulty);
 	}
-	if (level->m_levelID.value() < 128) {
-		return convertRobTopLevelToAssetKey(level->m_levelID);
+	if (level->m_levelID.value() < 128 || level->m_levelID.value() == 3001) {
+		return convertRobTopLevelToAssetKey(level->m_levelID.value());
 	}
 
 	switch (stars) {
@@ -366,7 +369,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 		std::string state;
 
-		bool isRobTopLevel = m_level->m_levelID.value() < 128;
+		bool isRobTopLevel = m_level->m_levelID.value() < 128 || m_level->m_levelID.value() == 3001;
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
 			state = std::string(m_level->m_levelName) + " by " + ((isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)) + " (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
