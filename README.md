@@ -1,3 +1,3 @@
 # DiscordRichPresence
 
-This is where she makes a mod.
+Read the about.md for more info
