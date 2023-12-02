@@ -42,7 +42,7 @@ static void initDiscordRP() {
 
 }
 
-void updateDiscordRP(std::string details, std::string state, std::string smallImageKey = "", std::string smallImageText = "") {
+void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "") {
 	auto gm = GameManager::sharedState();
 	DiscordRichPresence discordPresence{};
     discordPresence.details = details.c_str();
@@ -93,12 +93,68 @@ std::string convertGJDifficultyToAssetKey(GJDifficulty difficulty) {
 	return "na";
 }
 
-std::string getAssetKey(int stars, GJDifficulty difficulty) {
+std::string convertRobTopLevelToAssetKey(int lvlID) {
+	switch (lvlID) {
+		case 1:
+			return "easy"; // Stereo Madness
+		case 2:
+			return "easy"; // Back On Track
+		case 3:
+			return "normal"; // Polargeist
+		case 4:
+			return "normal"; // Dry Out
+		case 5:
+			return "hard"; // Base After Base
+		case 6:
+			return "hard"; // Can't Let Go
+		case 7:
+			return "harder"; // Jumper
+		case 8:
+			return "harder"; // Time Machine
+		case 9:
+			return "harder"; // Cycles
+		case 10:
+			return "insane"; // xStep
+		case 11:
+			return "insane"; // Clutterfunk
+		case 12:
+			return "insane"; // Theory of Everything
+		case 13:
+			return "insane"; // Electroman Adventures
+		case 14:
+			return "hard_demon"; // Clubstep
+		case 15:
+			return ((Mod::get()->getSettingValue<bool>("funny-mode")) ? "easy_demon" : "insane"); // Electrodynamix
+		case 16:
+			return "insane"; // Hexagon Force
+		case 17:
+			return "harder"; // Blast Processing
+		case 18:
+			return "hard_demon"; // TOE 2
+		case 19:
+			return "harder"; // Geometrical Dominator
+		case 20:
+			return "hard_demon"; // Deadlocked
+		case 21:
+			return "insane"; // Fingerdash
+		case 22:
+			return "insane"; // Dash
+		case 23:
+			return "hard_demon"; // Explorers
+	}
+}
+
+std::string getAssetKey(GJGameLevel* level) {
+	int stars = level->m_stars.value();
+	auto difficulty = level->m_difficulty;
 	if (stars == 0) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
 	if (stars == 10) {
 		return convertGJDifficultyDemonToAssetKey(difficulty);
+	}
+	if (level->m_levelID.value() < 128) {
+		return convertRobTopLevelToAssetKey(level->m_levelID);
 	}
 
 	switch (stars) {
@@ -128,7 +184,7 @@ class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 		initDiscordRP();
-		updateDiscordRP("Browsing Menus", "Main Menu");
+		updateDiscordRP("Browsing Menus");
 
 		return true;
 	}
@@ -140,65 +196,67 @@ class $modify(CreatorLayer) {
 		updateDiscordRP("Browsing Menus", "Creator Tab");
 		return true;
 	}
+	
+	// TODO: uncomment this stuff when geode implements functionality for adding virtuals
 
-	void onLeaderboards(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out leaderboards");
-		return CreatorLayer::onLeaderboards(p0);
-	}
+	// void onLeaderboards(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out leaderboards");
+	// 	return CreatorLayer::onLeaderboards(p0);
+	// }
 
-	void onMyLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out created levels");
-		return CreatorLayer::onMyLevels(p0);
-	}
+	// void onMyLevels(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out created levels");
+	// 	return CreatorLayer::onMyLevels(p0);
+	// }
 
-	void onSavedLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out saved levels");
-		return CreatorLayer::onSavedLevels(p0);
-	}
+	// void onSavedLevels(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out saved levels");
+	// 	return CreatorLayer::onSavedLevels(p0);
+	// }
 
-	void onMapPacks(CCObject* p0) {
-		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
-		std::string state = "";
-		if (shouldBeFunny) {
-			state = "Checking out the worst levels known to man";
-		} else {
-			state = "Checking out map packs";
-		}
-		updateDiscordRP("Browsing Menus", state);
-		return CreatorLayer::onMapPacks(p0);
-	}
+	// void onMapPacks(CCObject* p0) {
+	// 	auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+	// 	std::string state = "";
+	// 	if (shouldBeFunny) {
+	// 		state = "Checking out the worst levels known to man";
+	// 	} else {
+	// 		state = "Checking out map packs";
+	// 	}
+	// 	updateDiscordRP("Browsing Menus", state);
+	// 	return CreatorLayer::onMapPacks(p0);
+	// }
 
-	void onDailyLevel(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the daily level");
-		return CreatorLayer::onDailyLevel(p0);
-	}
+	// void onDailyLevel(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out the daily level");
+	// 	return CreatorLayer::onDailyLevel(p0);
+	// }
 
-	void onWeeklyLevel(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the weekly level");
-		return CreatorLayer::onWeeklyLevel(p0);
-	}
+	// void onWeeklyLevel(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out the weekly level");
+	// 	return CreatorLayer::onWeeklyLevel(p0);
+	// }
 
-	void onFeaturedLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the featured tab");
-		return CreatorLayer::onFeaturedLevels(p0);
-	}
+	// void onFeaturedLevels(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out the featured tab");
+	// 	return CreatorLayer::onFeaturedLevels(p0);
+	// }
 
-	void onFameLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the Hall of Fame");
-		return CreatorLayer::onFameLevels(p0);
-	}
+	// void onFameLevels(CCObject* p0) {
+	// 	updateDiscordRP("Browsing Menus", "Checking out the Hall of Fame");
+	// 	return CreatorLayer::onFameLevels(p0);
+	// }
 
-	void onGauntlets(CCObject* p0) {
-		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
-		std::string state = "";
-		if (shouldBeFunny) {
-			state = "Checking out the better map packs";
-		} else {
-			state = "Checking out the gauntlets";
-		}
-		updateDiscordRP("Browsing Menus", state);
-		return CreatorLayer::onGauntlets(p0);
-	}
+	// void onGauntlets(CCObject* p0) {
+	// 	auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+	// 	std::string state = "";
+	// 	if (shouldBeFunny) {
+	// 		state = "Checking out the better map packs";
+	// 	} else {
+	// 		state = "Checking out the gauntlets";
+	// 	}
+	// 	updateDiscordRP("Browsing Menus", state);
+	// 	return CreatorLayer::onGauntlets(p0);
+	// }
 };
 
 class $modify(LevelSearchLayer) {
@@ -236,7 +294,7 @@ class $modify(LevelInfoLayer) {
 		updateDiscordRP(
 			"Viewing Level",
 			std::string(level->m_levelName) + " by " + std::string(level->m_creatorName),
-			getAssetKey(level->m_stars.value(), level->getAverageDifficulty()),
+			getAssetKey(level),
 			(isRated) ? "Rated" : "Not Rated"
 		);
 		return true;
@@ -308,8 +366,10 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 		std::string state;
 
-		if (m_level->m_isUploaded || shouldShowSensitive) {
-			state = std::string(m_level->m_levelName) + " by " + std::string(m_level->m_creatorName) + " (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
+		bool isRobTopLevel = m_level->m_levelID.value() < 128;
+
+		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
+			state = std::string(m_level->m_levelName) + " by " + ((isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)) + " (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
 		} else if (!shouldShowSensitive) {
 			state = "Playtesting a created level";
 		}
@@ -317,7 +377,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		updateDiscordRP(
 			"Playing Level",
 			state,
-			getAssetKey(m_level->m_stars.value(), m_level->getAverageDifficulty()),
+			getAssetKey(m_level),
 			(isRated) ? "Rated" : "Not Rated"
 		);
 	}
