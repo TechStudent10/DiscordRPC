@@ -22,6 +22,10 @@ add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 target_include_directories(${PROJECT_NAME} PRIVATE 
     libs/discord-rpc/include
 )
-target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/discord-rpc/extensions/discord-rpc.lib)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/discord-rpc/extensions/libdiscord-rpc.a)
+else()
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/discord-rpc/extensions/discord-rpc.lib)
+endif()
 
 setup_geode_mod(${PROJECT_NAME})

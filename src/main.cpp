@@ -57,17 +57,17 @@ void updateDiscordRP(std::string details, std::string state = "", std::string sm
     Discord_UpdatePresence(&discordPresence);
 }
 
-std::string convertGJDifficultyDemonToAssetKey(GJDifficulty difficulty) {
-	switch (static_cast<int>(difficulty)) {
-		case 1:
-			return "easy_demon";
-		case 2:
-			return "medium_demon";
+std::string convertGJDifficultyDemonToAssetKey(int difficulty) {
+	switch (difficulty) {
 		case 3:
-			return "hard_demon";
+			return "easy_demon";
 		case 4:
-			return "insane_demon";
+			return "medium_demon";
+		case 0:
+			return "hard_demon";
 		case 5:
+			return "insane_demon";
+		case 6:
 			return "extreme_demon";
 	}
 	return "na";
@@ -148,13 +148,15 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 
 std::string getAssetKey(GJGameLevel* level) {
 	int stars = level->m_stars.value();
-	auto difficulty = level->m_difficulty;
-	log::info(std::to_string(level->m_levelID.value()));
+	auto difficulty = level->getAverageDifficulty();
+	log::info("demoz: {}", std::to_string(level->m_demonDifficulty));
+	// log::info(std::to_string(level->m_levelID.value()));
+	log::info("diff: {}", std::to_string(static_cast<int>(difficulty)));
 	if (stars == 0) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
 	if (stars == 10) {
-		return convertGJDifficultyDemonToAssetKey(difficulty);
+		return convertGJDifficultyDemonToAssetKey(level->m_demonDifficulty);
 	}
 	if (level->m_levelID.value() < 128 || level->m_levelID.value() == 3001) {
 		return convertRobTopLevelToAssetKey(level->m_levelID.value());

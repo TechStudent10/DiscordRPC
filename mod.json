@@ -1,6 +1,6 @@
 {
 	"geode": "1.3.6",
-	"version": "v1.0.1",
+	"version": "v1.1.0",
 	"id": "techstudent10.discord_rich_presence",
 	"name": "Discord Rich Presence",
 	"developer": "TechStudent10",
@@ -18,5 +18,10 @@
 			"type": "bool",
 			"default": false
 		}
+	},
+	"repository": "https://github.com/TechStudent10/DiscordRPC",
+	"issues": {
+		"info": "Please report issues to the GitHub repository",
+		"url": "https://github.com/TechStudent10/DiscordRPC/issues"
 	}
 }
