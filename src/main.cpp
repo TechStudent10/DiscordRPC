@@ -42,13 +42,20 @@ static void initDiscordRP() {
 
 }
 
-void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "") {
+void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "", bool useTime = false) {
 	auto gm = GameManager::sharedState();
+	auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
+	auto shouldShowTime = Mod::get()->getSettingValue<bool>("show-time");
 	DiscordRichPresence discordPresence{};
     discordPresence.details = details.c_str();
     discordPresence.state = state.c_str();
     discordPresence.largeImageKey = "gd_large";
-    discordPresence.largeImageText = gm->m_playerName.c_str();
+	if (useTime && shouldShowTime) discordPresence.startTimestamp = time(0);
+	if (shouldShowSensitive) {
+    	discordPresence.largeImageText = gm->m_playerName.c_str();
+	} else {
+		discordPresence.largeImageText = "Playing a Game";
+	}
 	if (smallImageKey != "") {
 		discordPresence.smallImageKey = smallImageKey.c_str();
 		discordPresence.smallImageText = smallImageText.c_str();
@@ -323,7 +330,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		} else {
 			details = "Working on a level";
 		}
-		updateDiscordRP(details, std::to_string(m_level->m_objectCount.value()) + " objects as of opening the editor");
+		updateDiscordRP(details, std::to_string(m_level->m_objectCount.value()) + " objects as of opening the editor", "", "", true);
 	}
 
 	GameObject* createObject(int objectID, CCPoint pos, bool p2) {
@@ -383,7 +390,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 			"Playing Level",
 			state,
 			getAssetKey(m_level),
-			(isRated) ? "Rated" : "Not Rated"
+			(isRated) ? "Rated" : "Not Rated",
+			true
 		);
 	}
 };

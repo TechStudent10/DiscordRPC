@@ -17,6 +17,12 @@
 			"description": "Allows this mod to show things like level names in the creator tab for the world to see (no not your password)",
 			"type": "bool",
 			"default": false
+		},
+		"show-time": {
+			"name": "Show timestamps",
+			"description": "Will add \"x:xx elapsed\" to your status",
+			"type": "bool",
+			"default": true
 		}
 	},
 	"repository": "https://github.com/TechStudent10/DiscordRPC",
