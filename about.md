@@ -10,6 +10,10 @@ Dont do it...
 ### Sensitive info
 Reveals information such as un-uploaded level names.
 
+### Show Timestamps
+Adds the "x:xx elapsed" part to your Discord status in supported areas (Playing and Creating).
+
+---
 
 credits to
 - dank_meme for helping fix that one playtesting issue

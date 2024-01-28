@@ -80,8 +80,8 @@ std::string convertGJDifficultyDemonToAssetKey(int difficulty) {
 	return "na";
 }
 
-std::string convertGJDifficultyToAssetKey(GJDifficulty difficulty) {
-	switch (static_cast<int>(difficulty)) {
+std::string convertGJDifficultyToAssetKey(int difficulty) {
+	switch (difficulty) {
 		case -1:
 			return "auto";
 		case 0:
@@ -153,12 +153,18 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 	}
 }
 
+auto getAverageDifficulty(GJGameLevel* level) {
+	return level->m_ratings / level->m_ratingsSum;
+}
+
 std::string getAssetKey(GJGameLevel* level) {
 	int stars = level->m_stars.value();
+	// auto difficulty = getAverageDifficulty(level); // binding
 	auto difficulty = level->getAverageDifficulty();
+	
 	log::info("demoz: {}", std::to_string(level->m_demonDifficulty));
 	// log::info(std::to_string(level->m_levelID.value()));
-	log::info("diff: {}", std::to_string(static_cast<int>(difficulty)));
+	log::info("diff: {}", std::to_string(difficulty));
 	if (stars == 0) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
@@ -272,16 +278,16 @@ class $modify(CreatorLayer) {
 };
 
 class $modify(LevelSearchLayer) {
-	bool init() {
-		if (!LevelSearchLayer::init()) return false;
+	bool init(int p0) {
+		if (!LevelSearchLayer::init(p0)) return false;
 		updateDiscordRP("Browsing Menus", "Search Tab");
 		return true;
 	}
 };
 
 class $modify(LevelInfoLayer) {
-	bool init(GJGameLevel* level) {
-		if (!LevelInfoLayer::init(level)) return false;
+	bool init(GJGameLevel* level, bool p1) {
+		if (!LevelInfoLayer::init(level, p1)) return false;
 		// testing stuff, this works properly now
 		///
 		// log::info(std::to_string(
@@ -314,8 +320,8 @@ class $modify(LevelInfoLayer) {
 };
 
 class $modify(MyLevelEditorLayer, LevelEditorLayer) {
-	bool init(GJGameLevel* level) {
-		if (!LevelEditorLayer::init(level)) return false;
+	bool init(GJGameLevel* level, bool p0) {
+		if (!LevelEditorLayer::init(level, p0)) return false;
 
 		MyLevelEditorLayer::updateStatus();
 
@@ -333,25 +339,25 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		updateDiscordRP(details, std::to_string(m_level->m_objectCount.value()) + " objects as of opening the editor", "", "", true);
 	}
 
-	GameObject* createObject(int objectID, CCPoint pos, bool p2) {
-		auto object = LevelEditorLayer::createObject(objectID, pos, p2);
+	// GameObject* createObject(int objectID, CCPoint pos, bool p2) {
+	// 	auto object = LevelEditorLayer::createObject(objectID, pos, p2); // find bindings for this too
 
-		updateStatus();
+	// 	updateStatus();
 
-		return object;
-	}
+	// 	return object;
+	// }
 
-	void removeObject(GameObject* object, bool p1) {
-		LevelEditorLayer::removeObject(object, p1);
-		updateStatus();
-	}
+	// void removeObject(GameObject* object, bool p1) {
+	// 	LevelEditorLayer::removeObject(object, p1); // binding
+	// 	updateStatus();
+// 	}
 };
 
 class $modify(MyPlayLayer, PlayLayer) {
-	bool init(GJGameLevel* level) {
-		if (!PlayLayer::init(level)) return false;
+	bool init(GJGameLevel* level, bool p1, bool p2) {
+		if (!PlayLayer::init(level, p1, p2)) return false;
 
-		MyPlayLayer::updateRP();
+		MyPlayLayer::updateRP(true);
 
 		return true;
 	}
@@ -372,7 +378,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		MyPlayLayer::updateRP();
 	}
 
-	void updateRP() {
+	void updateRP(bool isInitial = false) {
 		bool isRated = m_level->m_stars.value() != 0;
 		auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 
@@ -391,7 +397,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 			state,
 			getAssetKey(m_level),
 			(isRated) ? "Rated" : "Not Rated",
-			true
+			isInitial
 		);
 	}
 };
