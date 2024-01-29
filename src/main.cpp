@@ -13,6 +13,7 @@
 using namespace geode::prelude;
 
 static const char* APPLICATION_ID = "1178492879627366472";
+time_t currentTime = time(0);
 
 static void handleDiscordReady(const DiscordUser* user) {
 	log::info("Connected to Discord RPC");
@@ -42,7 +43,7 @@ static void initDiscordRP() {
 
 }
 
-void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "", bool useTime = false) {
+void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "", bool useTime = false, bool shouldResetTime = false) {
 	auto gm = GameManager::sharedState();
 	auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 	auto shouldShowTime = Mod::get()->getSettingValue<bool>("show-time");
@@ -50,7 +51,10 @@ void updateDiscordRP(std::string details, std::string state = "", std::string sm
     discordPresence.details = details.c_str();
     discordPresence.state = state.c_str();
     discordPresence.largeImageKey = "gd_large";
-	if (useTime && shouldShowTime) discordPresence.startTimestamp = time(0);
+	if (useTime && shouldShowTime) {
+		if (shouldResetTime) currentTime = time(0);
+		discordPresence.startTimestamp = currentTime;
+	}
 	if (shouldShowSensitive) {
     	discordPresence.largeImageText = gm->m_playerName.c_str();
 	} else {
@@ -379,6 +383,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 	}
 
 	void updateRP(bool isInitial = false) {
+		log::info("is initial: {}", std::to_string(isInitial));
+
 		bool isRated = m_level->m_stars.value() != 0;
 		auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 
@@ -387,16 +393,35 @@ class $modify(MyPlayLayer, PlayLayer) {
 		bool isRobTopLevel = m_level->m_levelID.value() < 128 || m_level->m_levelID.value() == 3001;
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
-			state = std::string(m_level->m_levelName) + " by " + ((isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)) + " (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
+			state = std::string(m_level->m_levelName) 
+				+ " by " + 
+				(
+					(isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)
+				) +
+				" (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
 		} else if (!shouldShowSensitive) {
 			state = "Playtesting a created level";
 		}
 
+		std::string details = "Playing a";
+		if (m_level->isPlatformer()) {
+			details = details + " Platformer";
+		}
+
+		bool isDaily = m_level->m_dailyID.value() != 0;
+
+		if (isDaily) {
+			details = details + " daily";
+		}
+
+		details = details + " level";
+
 		updateDiscordRP(
-			"Playing Level",
+			details,
 			state,
 			getAssetKey(m_level),
 			(isRated) ? "Rated" : "Not Rated",
+			true,
 			isInitial
 		);
 	}
