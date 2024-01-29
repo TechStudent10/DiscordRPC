@@ -1,10 +1,10 @@
 {
 	"geode": "2.0.0",
-	"version": "v2.0.0",
+	"version": "v2.1.0",
 	"id": "techstudent10.discord_rich_presence",
 	"name": "Discord Rich Presence",
 	"developer": "TechStudent10",
-	"description": "poor absence",
+	"description": "A Discord Rich Presence Mod for Geometry Dash",
 	"gd": "2.204",
 	"settings": {
 		"funny-mode": {
