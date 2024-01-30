@@ -221,64 +221,59 @@ class $modify(CreatorLayer) {
 	
 	// TODO: uncomment this stuff when geode implements functionality for adding virtuals
 
-	// void onLeaderboards(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out leaderboards");
-	// 	return CreatorLayer::onLeaderboards(p0);
-	// }
+	void onLeaderboards(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out leaderboards");
+		return CreatorLayer::onLeaderboards(p0);
+	}
 
-	// void onMyLevels(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out created levels");
-	// 	return CreatorLayer::onMyLevels(p0);
-	// }
+	void onMyLevels(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out created levels");
+		return CreatorLayer::onMyLevels(p0);
+	}
 
-	// void onSavedLevels(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out saved levels");
-	// 	return CreatorLayer::onSavedLevels(p0);
-	// }
+	void onSavedLevels(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out saved levels");
+		return CreatorLayer::onSavedLevels(p0);
+	}
 
-	// void onMapPacks(CCObject* p0) {
-	// 	auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
-	// 	std::string state = "";
-	// 	if (shouldBeFunny) {
-	// 		state = "Checking out the worst levels known to man";
-	// 	} else {
-	// 		state = "Checking out map packs";
-	// 	}
-	// 	updateDiscordRP("Browsing Menus", state);
-	// 	return CreatorLayer::onMapPacks(p0);
-	// }
+	void onMapPacks(CCObject* p0) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string state = "";
+		if (shouldBeFunny) {
+			state = "Checking out the worst levels known to man";
+		} else {
+			state = "Checking out map packs";
+		}
+		updateDiscordRP("Browsing Menus", state);
+		return CreatorLayer::onMapPacks(p0);
+	}
 
-	// void onDailyLevel(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out the daily level");
-	// 	return CreatorLayer::onDailyLevel(p0);
-	// }
+	void onDailyLevel(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out the daily level");
+		return CreatorLayer::onDailyLevel(p0);
+	}
 
-	// void onWeeklyLevel(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out the weekly level");
-	// 	return CreatorLayer::onWeeklyLevel(p0);
-	// }
+	void onWeeklyLevel(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out the weekly level");
+		return CreatorLayer::onWeeklyLevel(p0);
+	}
 
-	// void onFeaturedLevels(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out the featured tab");
-	// 	return CreatorLayer::onFeaturedLevels(p0);
-	// }
+	void onFeaturedLevels(CCObject* p0) {
+		updateDiscordRP("Browsing Menus", "Checking out the featured tab");
+		return CreatorLayer::onFeaturedLevels(p0);
+	}
 
-	// void onFameLevels(CCObject* p0) {
-	// 	updateDiscordRP("Browsing Menus", "Checking out the Hall of Fame");
-	// 	return CreatorLayer::onFameLevels(p0);
-	// }
-
-	// void onGauntlets(CCObject* p0) {
-	// 	auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
-	// 	std::string state = "";
-	// 	if (shouldBeFunny) {
-	// 		state = "Checking out the better map packs";
-	// 	} else {
-	// 		state = "Checking out the gauntlets";
-	// 	}
-	// 	updateDiscordRP("Browsing Menus", state);
-	// 	return CreatorLayer::onGauntlets(p0);
-	// }
+	void onGauntlets(CCObject* p0) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string state = "";
+		if (shouldBeFunny) {
+			state = "Checking out the better map packs";
+		} else {
+			state = "Checking out the gauntlets";
+		}
+		updateDiscordRP("Browsing Menus", state);
+		return CreatorLayer::onGauntlets(p0);
+	}
 };
 
 class $modify(LevelSearchLayer) {
