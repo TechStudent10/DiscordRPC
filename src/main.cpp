@@ -155,6 +155,7 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 		case 3001:
 			return "hard"; // The Challenge
 	}
+	return "na";
 }
 
 auto getAverageDifficulty(GJGameLevel* level) {
@@ -163,12 +164,8 @@ auto getAverageDifficulty(GJGameLevel* level) {
 
 std::string getAssetKey(GJGameLevel* level) {
 	int stars = level->m_stars.value();
-	// auto difficulty = getAverageDifficulty(level); // binding
 	auto difficulty = level->getAverageDifficulty();
-	
-	log::info("demoz: {}", std::to_string(level->m_demonDifficulty));
-	// log::info(std::to_string(level->m_levelID.value()));
-	log::info("diff: {}", std::to_string(difficulty));
+
 	if (stars == 0) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
@@ -287,25 +284,6 @@ class $modify(LevelSearchLayer) {
 class $modify(LevelInfoLayer) {
 	bool init(GJGameLevel* level, bool p1) {
 		if (!LevelInfoLayer::init(level, p1)) return false;
-		// testing stuff, this works properly now
-		///
-		// log::info(std::to_string(
-		// 	static_cast<int>(level->getAverageDifficulty())
-		// ));
-		// log::info(std::to_string(
-		// 	static_cast<int>(level->m_difficulty)
-		// ));
-		// log::info(std::to_string(
-		// 	static_cast<int>(level->m_demonDifficulty)
-		// ));
-		// // TODO: ignore all todos below and just use the goddamn star count. only use m_difficulty for unrated levels
-		// // TODO: Determine if Easy and Normal rated level are not Easy/Medium demons somehow
-		// // TODO: Then I need to add the N/A difficulty face
-		// // TODO: And finally I need to distinguish between demons and non-demons
-		// // ... all of this for a 512px/512px circle face on texting platform
-		
-		// log::info(std::to_string(level->m_stars.value()));
-
 		bool isRated = level->m_stars.value() != 0;
 		
 		updateDiscordRP(
@@ -337,19 +315,6 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		}
 		updateDiscordRP(details, std::to_string(m_level->m_objectCount.value()) + " objects as of opening the editor", "", "", true);
 	}
-
-	// GameObject* createObject(int objectID, CCPoint pos, bool p2) {
-	// 	auto object = LevelEditorLayer::createObject(objectID, pos, p2); // find bindings for this too
-
-	// 	updateStatus();
-
-	// 	return object;
-	// }
-
-	// void removeObject(GameObject* object, bool p1) {
-	// 	LevelEditorLayer::removeObject(object, p1); // binding
-	// 	updateStatus();
-// 	}
 };
 
 class $modify(MyPlayLayer, PlayLayer) {
@@ -377,9 +342,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		MyPlayLayer::updateRP();
 	}
 
-	void updateRP(bool isInitial = false) {
-		log::info("is initial: {}", std::to_string(isInitial));
-
+	void updateRP(bool resetTime = false) {
 		bool isRated = m_level->m_stars.value() != 0;
 		auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 
@@ -388,19 +351,30 @@ class $modify(MyPlayLayer, PlayLayer) {
 		bool isRobTopLevel = m_level->m_levelID.value() < 128 || m_level->m_levelID.value() == 3001;
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
+			std::string percentString;
+			if (m_level->isPlatformer()) {
+				int sec = round(m_level->m_bestTime / 1000);
+				percentString = std::to_string(sec) + "s";
+
+				if (m_level->m_bestTime == 0) {
+					percentString = "No Best Time";
+				}
+			} else {
+				percentString = std::to_string(m_level->m_normalPercent.value()) + "%";
+			}
 			state = std::string(m_level->m_levelName) 
 				+ " by " + 
 				(
 					(isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)
 				) +
-				" (" + std::to_string(m_level->m_normalPercent.value()) + "%)";
+				" (" + percentString + ")";
 		} else if (!shouldShowSensitive) {
 			state = "Playtesting a created level";
 		}
 
 		std::string details = "Playing a";
 		if (m_level->isPlatformer()) {
-			details = details + " Platformer";
+			details = details + " platformer";
 		}
 
 		bool isDaily = m_level->m_dailyID.value() != 0;
@@ -417,7 +391,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 			getAssetKey(m_level),
 			(isRated) ? "Rated" : "Not Rated",
 			true,
-			isInitial
+			resetTime
 		);
 	}
 };
