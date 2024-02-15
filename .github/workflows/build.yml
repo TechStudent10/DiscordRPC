@@ -29,6 +29,7 @@ jobs:
         with:
           combine: true
           target: ${{ matrix.config.target }}
+          recursive: true
 
   package:
     name: Package builds
