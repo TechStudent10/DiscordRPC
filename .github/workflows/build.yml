@@ -23,13 +23,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:  
+          recursive: true
 
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
           combine: true
           target: ${{ matrix.config.target }}
-          recursive: true
 
   package:
     name: Package builds
