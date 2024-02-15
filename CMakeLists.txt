@@ -23,9 +23,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     libs/discord-rpc/include
 )
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/discord-rpc/extensions/libdiscord-rpc.a)
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/extensions/libdiscord-rpc.a)
 else()
-    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/discord-rpc/extensions/discord-rpc.lib)
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/extensions/discord-rpc.lib)
 endif()
 
 setup_geode_mod(${PROJECT_NAME})
