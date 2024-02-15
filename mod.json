@@ -5,7 +5,10 @@
 	"name": "Discord Rich Presence",
 	"developer": "TechStudent10",
 	"description": "A Discord Rich Presence mod for Geode",
-	"gd": "2.204",
+	"gd": {
+		"win": "2.204",
+		"mac": "2.200"
+	},
 	"settings": {
 		"funny-mode": {
 			"name": "Just, dont...",
