@@ -13,9 +13,8 @@
 
 # Compiled Dynamic libraries
 *.so
-# bruh
-# *.dylib
-# *.dll
+*.dylib
+*.dll
 
 # Fortran module files
 *.mod
@@ -24,8 +23,9 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
-*.lib
+# bruh
+# *.a
+# *.lib
 
 # Executables
 *.exe
