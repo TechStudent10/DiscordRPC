@@ -3,8 +3,8 @@ name: Build Geode Mod
 on:
   workflow_dispatch:
   push:
-    branches:
-      - "**"
+    tags:
+      - 'v*'
 
 jobs:
   build:

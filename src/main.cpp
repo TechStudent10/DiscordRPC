@@ -56,9 +56,9 @@ void updateDiscordRP(std::string details, std::string state = "", std::string sm
 		discordPresence.startTimestamp = currentTime;
 	}
 	if (shouldShowSensitive) {
-    	discordPresence.largeImageText = gm->m_playerName.c_str();
+    	discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();
 	} else {
-		discordPresence.largeImageText = "Playing a Game";
+		discordPresence.largeImageText = fmt::format("Playing Geometry Dash on {}", GEODE_PLATFORM_NAME).c_str();
 	}
 	if (smallImageKey != "") {
 		discordPresence.smallImageKey = smallImageKey.c_str();
@@ -300,12 +300,12 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 	bool init(GJGameLevel* level, bool p0) {
 		if (!LevelEditorLayer::init(level, p0)) return false;
 
-		MyLevelEditorLayer::updateStatus();
+		this->schedule(schedule_selector(MyLevelEditorLayer::updateStatus), 1);
 
 		return true;
 	}
 
-	void updateStatus() {
+	void updateStatus(float dt) {
 		auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 		std::string details = "";
 		if (shouldShowSensitive) {
@@ -313,7 +313,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		} else {
 			details = "Working on a level";
 		}
-		updateDiscordRP(details, std::to_string(m_level->m_objectCount.value()) + " objects as of opening the editor", "", "", true);
+		updateDiscordRP(details, std::to_string(m_objects->count()) + " objects", "editor", "Editing a level", true);
 	}
 };
 
@@ -322,23 +322,12 @@ class $modify(MyPlayLayer, PlayLayer) {
 		if (!PlayLayer::init(level, p1, p2)) return false;
 
 		MyPlayLayer::updateRP(true);
+		this->schedule(schedule_selector(MyPlayLayer::updateRPLoop), 1);
 
 		return true;
 	}
 
-	void showNewBest(bool p0, int p1, int p2, bool p3, bool p4, bool p5) {
-		PlayLayer::showNewBest(p0, p1, p2, p3, p4, p5);
-
-		MyPlayLayer::updateRP();
-	}
-
-	void resetLevel() {
-		PlayLayer::resetLevel();
-		MyPlayLayer::updateRP();
-	}
-
-	void levelComplete() {
-		PlayLayer::levelComplete();
+	void updateRPLoop(float dt) {
 		MyPlayLayer::updateRP();
 	}
 
@@ -351,25 +340,25 @@ class $modify(MyPlayLayer, PlayLayer) {
 		bool isRobTopLevel = m_level->m_levelID.value() < 128 || m_level->m_levelID.value() == 3001;
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
-			std::string percentString;
-			if (m_level->isPlatformer()) {
-				int sec = round(m_level->m_bestTime / 1000);
-				percentString = std::to_string(sec) + "s";
-
-				if (m_level->m_bestTime == 0) {
-					percentString = "No Best Time";
-				}
-			} else {
-				percentString = std::to_string(m_level->m_normalPercent.value()) + "%";
-			}
 			state = std::string(m_level->m_levelName) 
 				+ " by " + 
 				(
 					(isRobTopLevel) ? "RobTopGames" : std::string(m_level->m_creatorName)
-				) +
-				" (" + percentString + ")";
+				);
 		} else if (!shouldShowSensitive) {
 			state = "Playtesting a created level";
+		}
+
+		std::string bestString;
+		if (m_level->isPlatformer()) {
+			int sec = round(m_level->m_bestTime / 1000);
+			bestString = std::to_string(sec) + "s";
+
+			if (m_level->m_bestTime == 0) {
+				bestString = "No Best Time";
+			}
+		} else {
+			bestString = std::to_string(m_level->m_normalPercent.value()) + "%";
 		}
 
 		std::string details = "Playing a";
@@ -383,7 +372,12 @@ class $modify(MyPlayLayer, PlayLayer) {
 			details = details + " daily";
 		}
 
-		details = details + " level";
+		std::string detailsPercentString = "";
+		auto gm = GameManager::sharedState()->getPlayLayer();
+		if (!m_level->isPlatformer()) {
+			detailsPercentString = " (" + std::to_string(gm->getCurrentPercentInt()) + "%)";
+		}
+		details = fmt::format("{} level{} (Best: {})", details, detailsPercentString, bestString);
 
 		updateDiscordRP(
 			details,
