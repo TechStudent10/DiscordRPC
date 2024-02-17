@@ -313,7 +313,14 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		} else {
 			details = "Working on a level";
 		}
-		updateDiscordRP(details, std::to_string(m_objects->count()) + " objects", "editor", "Editing a level", true);
+		int objectCount;
+		#ifdef GEODE_IS_WINDOWS
+		objectCount = m_objects->count();
+		#endif
+		#ifdef GEODE_IS_MACOS
+		objectCount = m_level->m_objectCount;
+		#endif
+		updateDiscordRP(details, std::to_string(objectCount) + " objects", "editor", "Editing a level", true);
 	}
 };
 
