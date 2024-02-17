@@ -374,9 +374,11 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 		std::string detailsPercentString = "";
 		auto gm = GameManager::sharedState()->getPlayLayer();
+		#ifdef GEODE_IS_WINDOWS
 		if (!m_level->isPlatformer()) {
 			detailsPercentString = " (" + std::to_string(gm->getCurrentPercentInt()) + "%)";
 		}
+		#endif
 		details = fmt::format("{} level{} (Best: {})", details, detailsPercentString, bestString);
 
 		updateDiscordRP(
