@@ -300,7 +300,11 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 	bool init(GJGameLevel* level, bool p0) {
 		if (!LevelEditorLayer::init(level, p0)) return false;
 
+		#ifdef GEODE_IS_WINDOWS
 		this->schedule(schedule_selector(MyLevelEditorLayer::updateStatus), 1);
+		#else
+		MyLevelEditorLayer::updateStatus(69.420);
+		#endif
 
 		return true;
 	}
@@ -329,7 +333,9 @@ class $modify(MyPlayLayer, PlayLayer) {
 		if (!PlayLayer::init(level, p1, p2)) return false;
 
 		MyPlayLayer::updateRP(true);
+		#ifdef GEODE_IS_WINDOWS
 		this->schedule(schedule_selector(MyPlayLayer::updateRPLoop), 1);
+		#endif
 
 		return true;
 	}
