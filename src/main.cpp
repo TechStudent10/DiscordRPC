@@ -350,7 +350,8 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 		std::string state;
 
-		bool isRobTopLevel = m_level->m_levelID.value() < 128 || m_level->m_levelID.value() == 3001;
+		bool isRobTopLevel = (m_level->m_levelID.value() < 128 && m_level->m_levelID.value() != 0) || m_level->m_levelID.value() == 3001 || m_level->m_levelID.value() < 5003 || m_level->m_levelID.value() > 5000;
+		// log::info("{}", std::to_string(m_level->m_levelID.value()));
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
 			state = std::string(m_level->m_levelName) 
@@ -388,7 +389,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		std::string detailsPercentString = "";
 		auto gm = GameManager::sharedState()->getPlayLayer();
 		#ifdef GEODE_IS_WINDOWS
-		if (!m_level->isPlatformer()) {
+		if (!m_level->isPlatformer() && Mod::get()->getSettingValue<bool>("show-percent")) {
 			detailsPercentString = " (" + std::to_string(gm->getCurrentPercentInt()) + "%)";
 		}
 		#endif
