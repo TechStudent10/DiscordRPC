@@ -340,6 +340,24 @@ class $modify(MyPlayLayer, PlayLayer) {
 		return true;
 	}
 
+	#ifdef GEODE_IS_MACOS
+	void showNewBest(bool p0, int p1, int p2, bool p3, bool p4, bool p5) {
+		PlayLayer::showNewBest(p0, p1, p2, p3, p4, p5);
+
+		MyPlayLayer::updateRP();
+	}
+
+	void resetLevel() {
+		PlayLayer::resetLevel();
+		MyPlayLayer::updateRP();
+	}
+
+	void levelComplete() {
+		PlayLayer::levelComplete();
+		MyPlayLayer::updateRP();
+	}
+	#endif
+
 	void updateRPLoop(float dt) {
 		MyPlayLayer::updateRP();
 	}
@@ -350,7 +368,11 @@ class $modify(MyPlayLayer, PlayLayer) {
 
 		std::string state;
 
-		bool isRobTopLevel = (m_level->m_levelID.value() < 128 && m_level->m_levelID.value() != 0) || m_level->m_levelID.value() == 3001 || m_level->m_levelID.value() < 5003 || m_level->m_levelID.value() > 5000;
+		bool isRobTopLevel = (
+			(m_level->m_levelID.value() < 128 && m_level->m_levelID.value() != 0) ||
+				m_level->m_levelID.value() == 3001 || m_level->m_levelID.value() < 5003 ||
+				m_level->m_levelID.value() > 5000
+		) && std::string(m_level->m_creatorName) == "";
 		// log::info("{}", std::to_string(m_level->m_levelID.value()));
 
 		if (m_level->m_levelType != GJLevelType::Editor || shouldShowSensitive) {
