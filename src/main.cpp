@@ -7,66 +7,12 @@
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
-#include <discord_register.h>
-#include <discord_rpc.h>
+#include "../include/CustomPresense.hpp"
 
 using namespace geode::prelude;
+using namespace gdrpc;
 
-static const char* APPLICATION_ID = "1178492879627366472";
-time_t currentTime = time(0);
-
-static void handleDiscordReady(const DiscordUser* user) {
-	log::info("Connected to Discord RPC");
-	log::info("Username: {}", user->username);
-	log::info("UserID: {}", user->userId);
-}
-
-static void handleDiscordError(int errorCode, const char* message) {
-	log::info("Discord RPC error");
-	log::info("Error Code: {}", std::to_string(errorCode));
-	log::info("Message: {}", std::string(message));
-}
-
-static void handleDiscordDisconnected(int errorCode, const char* message) {
-	log::info("Discord RPC disconnected");
-	log::info("Error Code: {}", std::to_string(errorCode));
-	log::info("Message: {}", std::string(message));
-}
-
-static void initDiscordRP() {
-	DiscordEventHandlers handlers;
-	handlers.ready = handleDiscordReady;
-	handlers.errored = handleDiscordError;
-	handlers.disconnected = handleDiscordDisconnected;
-	Discord_Initialize(APPLICATION_ID, &handlers, 1, "322170");
-	Discord_RunCallbacks();
-
-}
-
-void updateDiscordRP(std::string details, std::string state = "", std::string smallImageKey = "", std::string smallImageText = "", bool useTime = false, bool shouldResetTime = false) {
-	auto gm = GameManager::sharedState();
-	auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
-	auto shouldShowTime = Mod::get()->getSettingValue<bool>("show-time");
-	DiscordRichPresence discordPresence{};
-    discordPresence.details = details.c_str();
-    discordPresence.state = state.c_str();
-    discordPresence.largeImageKey = "gd_large";
-	if (useTime && shouldShowTime) {
-		if (shouldResetTime) currentTime = time(0);
-		discordPresence.startTimestamp = currentTime;
-	}
-	if (shouldShowSensitive) {
-    	discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();
-	} else {
-		discordPresence.largeImageText = fmt::format("Playing Geometry Dash on {}", GEODE_PLATFORM_NAME).c_str();
-	}
-	if (smallImageKey != "") {
-		discordPresence.smallImageKey = smallImageKey.c_str();
-		discordPresence.smallImageText = smallImageText.c_str();
-	}
-    discordPresence.instance = 0;
-    Discord_UpdatePresence(&discordPresence);
-}
+auto rpc = new GDRPC();
 
 std::string convertGJDifficultyDemonToAssetKey(int difficulty) {
 	switch (difficulty) {
@@ -202,8 +148,8 @@ std::string getAssetKey(GJGameLevel* level) {
 class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
-		initDiscordRP();
-		updateDiscordRP("Browsing Menus");
+		rpc->initDiscordRP();
+		rpc->updateDiscordRP("Browsing Menus");
 
 		return true;
 	}
@@ -212,24 +158,24 @@ class $modify(MenuLayer) {
 class $modify(CreatorLayer) {
 	bool init() {
 		if (!CreatorLayer::init()) return false;
-		updateDiscordRP("Browsing Menus", "Creator Tab");
+		rpc->updateDiscordRP("Browsing Menus", "Creator Tab");
 		return true;
 	}
 	
 	// TODO: uncomment this stuff when geode implements functionality for adding virtuals
 
 	void onLeaderboards(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out leaderboards");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out leaderboards");
 		return CreatorLayer::onLeaderboards(p0);
 	}
 
 	void onMyLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out created levels");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out created levels");
 		return CreatorLayer::onMyLevels(p0);
 	}
 
 	void onSavedLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out saved levels");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out saved levels");
 		return CreatorLayer::onSavedLevels(p0);
 	}
 
@@ -241,22 +187,22 @@ class $modify(CreatorLayer) {
 		} else {
 			state = "Checking out map packs";
 		}
-		updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP("Browsing Menus", state);
 		return CreatorLayer::onMapPacks(p0);
 	}
 
 	void onDailyLevel(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the daily level");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the daily level");
 		return CreatorLayer::onDailyLevel(p0);
 	}
 
 	void onWeeklyLevel(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the weekly level");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the weekly level");
 		return CreatorLayer::onWeeklyLevel(p0);
 	}
 
 	void onFeaturedLevels(CCObject* p0) {
-		updateDiscordRP("Browsing Menus", "Checking out the featured tab");
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the featured tab");
 		return CreatorLayer::onFeaturedLevels(p0);
 	}
 
@@ -268,7 +214,7 @@ class $modify(CreatorLayer) {
 		} else {
 			state = "Checking out the gauntlets";
 		}
-		updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP("Browsing Menus", state);
 		return CreatorLayer::onGauntlets(p0);
 	}
 };
@@ -276,7 +222,7 @@ class $modify(CreatorLayer) {
 class $modify(LevelSearchLayer) {
 	bool init(int p0) {
 		if (!LevelSearchLayer::init(p0)) return false;
-		updateDiscordRP("Browsing Menus", "Search Tab");
+		rpc->updateDiscordRP("Browsing Menus", "Search Tab");
 		return true;
 	}
 };
@@ -286,7 +232,7 @@ class $modify(LevelInfoLayer) {
 		if (!LevelInfoLayer::init(level, p1)) return false;
 		bool isRated = level->m_stars.value() != 0;
 		
-		updateDiscordRP(
+		rpc->updateDiscordRP(
 			"Viewing Level",
 			std::string(level->m_levelName) + " by " + std::string(level->m_creatorName),
 			getAssetKey(level),
@@ -324,7 +270,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		#ifdef GEODE_IS_MACOS
 		objectCount = m_level->m_objectCount;
 		#endif
-		updateDiscordRP(details, std::to_string(objectCount) + " objects", "editor", "Editing a level", true);
+		rpc->updateDiscordRP(details, std::to_string(objectCount) + " objects", "editor", "Editing a level", true);
 	}
 };
 
@@ -417,7 +363,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		#endif
 		details = fmt::format("{} level{} (Best: {})", details, detailsPercentString, bestString);
 
-		updateDiscordRP(
+		rpc->updateDiscordRP(
 			details,
 			state,
 			getAssetKey(m_level),

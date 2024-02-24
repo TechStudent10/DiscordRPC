@@ -39,5 +39,10 @@
 	"issues": {
 		"info": "Please report issues to the GitHub repository",
 		"url": "https://github.com/TechStudent10/DiscordRPC/issues"
+	},
+	"api": {
+		"include": [
+			"include/*.hpp"
+		]
 	}
 }

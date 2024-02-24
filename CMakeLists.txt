@@ -8,9 +8,15 @@ project(DiscordRichPresence VERSION 1.0.0)
 
 file(GLOB SOURCES
 	src/*.cpp
+    src/*.hpp
+    include/*.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+if (PROJECT_IS_TOP_LEVEL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _DRPC_EXPORTING)
+endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
