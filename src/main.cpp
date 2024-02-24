@@ -7,7 +7,7 @@
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
-#include "../include/CustomPresense.hpp"
+#include "../include/CustomPresence.hpp"
 
 using namespace geode::prelude;
 using namespace gdrpc;
