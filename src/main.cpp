@@ -100,6 +100,42 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 			return "hard_demon"; // Explorers
 		case 3001:
 			return "hard"; // The Challenge
+		// Spinoffs
+		// Meltdown
+		case 1001:
+			return "easy"; // The Seven Seas
+		case 1002:
+			return "normal"; // Viking Arena
+		case 1003:
+			return "hard"; // Airborne Robots
+		// GD World
+		case 2001:
+			return "easy"; // Payload
+		case 2002:
+			return "easy"; // Beast Mode
+		case 2003:
+			return "normal"; // Machina
+		case 2004:
+			return "normal"; // Years
+		case 2005:
+			return "normal"; // Frontlines
+		case 2006:
+			return "normal"; // Space Pirates
+		case 2007:
+			return "normal"; // Striker
+		case 2008:
+			return "normal"; // Embers
+		case 2009:
+			return "normal"; // Round 1
+		case 2010:
+			return "normal"; // Monster Dance Off
+		// SubZero (i loooove gd cologne)
+		case 4001:
+			return "normal"; // Press Start
+		case 4002:
+			return "hard"; // Nock Em
+		case 4003:
+			return "harder"; // Power Trip
 	}
 	return "na";
 }
