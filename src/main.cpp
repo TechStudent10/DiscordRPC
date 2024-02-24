@@ -152,7 +152,12 @@ std::string getAssetKey(GJGameLevel* level) {
 		return convertGJDifficultyToAssetKey(difficulty);
 	}
 	if (stars == 10) {
-		return convertGJDifficultyDemonToAssetKey(level->m_demonDifficulty);
+		auto demonKey = convertGJDifficultyDemonToAssetKey(level->m_demonDifficulty);
+		// grand demoz
+		// if (demonKey == "extreme_demon" && Loader::get()->isModLoaded("itzkiba.grandpa_demon")) {
+
+		// }
+		return demonKey;
 	}
 	if (level->m_levelID.value() < 128 || level->m_levelID.value() == 3001) {
 		return convertRobTopLevelToAssetKey(level->m_levelID.value());
