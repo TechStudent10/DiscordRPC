@@ -1,4 +1,4 @@
-#include "../include/CustomPresense.hpp"
+#include "../include/CustomPresence.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
