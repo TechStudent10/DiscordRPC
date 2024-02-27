@@ -1,4 +1,4 @@
-#include <Geode/Geode.hpp>
+﻿#include <Geode/Geode.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/CreatorLayer.hpp>
@@ -6,6 +6,11 @@
 #include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
+#include <Geode/modify/GJShopLayer.hpp>
+#include <Geode/modify/GJGarageLayer.hpp>
+#include <Geode/modify/MoreOptionsLayer.hpp>
+#include <Geode/modify/OptionsLayer.hpp>
+#include <Geode/modify/SecretLayer4.hpp>
 
 #include "../include/CustomPresense.hpp"
 
@@ -55,7 +60,7 @@ std::string convertRobTopLevelToAssetKey(int lvlID) {
 		case 1:
 			return "easy"; // Stereo Madness
 		case 2:
-			return "easy"; // Back On Track
+			return ((Mod::get()->getSettingValue<bool>("funny-mode")) ? "extreme_demon" : "easy"); // Back On Track
 		case 3:
 			return "normal"; // Polargeist
 		case 4:
@@ -190,9 +195,29 @@ class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 		rpc->initDiscordRP();
-		rpc->updateDiscordRP("Browsing Menus");
+		rpc->updateDiscordRP("Browsing Menus", "Main Menu");
 
 		return true;
+	}
+
+	void onOptions(CCObject* sender) {
+		rpc->updateDiscordRP("Browsing Menus","Changing settings");
+		return MenuLayer::onOptions(sender);
+	}
+
+	void onPlay(CCObject* sender) {
+		rpc->updateDiscordRP("Browsing main levels");
+		return MenuLayer::onPlay(sender);
+	}
+
+	void onGarage(CCObject* sender) {
+		rpc->updateDiscordRP("Browsing Menus", "Character customization");
+		return MenuLayer::onGarage(sender);
+	}
+
+	void onAchievements(CCObject* sender) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		rpc->updateDiscordRP("Browsing Menus", shouldBeFunny ? "Wishing for the Creator Points UFO" : "Achievements");
 	}
 };
 
@@ -202,8 +227,6 @@ class $modify(CreatorLayer) {
 		rpc->updateDiscordRP("Browsing Menus", "Creator Tab");
 		return true;
 	}
-	
-	// TODO: uncomment this stuff when geode implements functionality for adding virtuals
 
 	void onLeaderboards(CCObject* p0) {
 		rpc->updateDiscordRP("Browsing Menus", "Checking out leaderboards");
@@ -257,6 +280,73 @@ class $modify(CreatorLayer) {
 		}
 		rpc->updateDiscordRP("Browsing Menus", state);
 		return CreatorLayer::onGauntlets(p0);
+	}
+
+	void onAdventureMap(CCObject* p0) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the map");
+		return CreatorLayer::onAdventureMap(p0);
+	}
+
+	void onEventLevel(CCObject* p0) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the event level");
+		return CreatorLayer::onEventLevel(p0);
+	}
+
+	void onMultiplayer(CCObject* p0) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string state = "";
+		if (shouldBeFunny) {
+			state = "Envying Scratch's chopper";
+		}
+		else {
+			state = "Checking out versus mode";
+		}
+		rpc->updateDiscordRP("Browsing Menus", state);
+		return CreatorLayer::onMultiplayer(p0);
+	}
+	
+	void onPaths(CCObject* p0) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the paths");
+		return CreatorLayer::onPaths(p0);
+	}
+
+	void onSecretVault(CCObject* p0) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string details = "";
+		std::string state = "";
+		if (shouldBeFunny) {
+			details = "Looking up answers on";
+			state = "the wiki with Glubfub";
+		}
+		else {
+			details = "Browsing vaults";
+			state = "Vault of Secrets";
+		}
+		rpc->updateDiscordRP(details, state);
+		return CreatorLayer::onSecretVault(p0);
+	}
+
+	void onTopLists(CCObject* p0) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string state = "";
+		if (shouldBeFunny) {
+			state = "Checking out the moderator-created map packs";
+		}
+		else {
+			state = "Checking out lists";
+		}
+		rpc->updateDiscordRP("Browsing Menus", state);
+		return CreatorLayer::onTopLists(p0);
+	}
+
+	void onTreasureRoom(CCObject* p0) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out the treasure room");
+		return CreatorLayer::onTreasureRoom(p0);
+	}
+
+	void onChallenge(CCObject* p0) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out quests"); 
+		return CreatorLayer::onChallenge(p0);
 	}
 };
 
@@ -412,5 +502,80 @@ class $modify(MyPlayLayer, PlayLayer) {
 			true,
 			resetTime
 		);
+	}
+};
+
+class $modify(GJShopLayer) {
+	bool init(ShopType p0) {
+		if (!GJShopLayer::init(p0)) return false;
+
+		auto orbs = fmt::format("∴{}", GameStatsManager::sharedState()->m_playerStats->valueForKey("14")->getCString());
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		switch(p0) {
+			case ShopType::Normal:
+				rpc->updateDiscordRP(shouldBeFunny ? "Shopping with Zolguroth" : "Shopping with the Shopkeeper", orbs);
+				break;
+			case ShopType::Secret:
+				rpc->updateDiscordRP("Shopping with Scratch", orbs);
+				break;
+			case ShopType::Community:
+				rpc->updateDiscordRP("Shopping with Potbor", orbs);
+				break;
+			default:
+				if (shouldBeFunny) {
+					// ⬘ seems like the best unicode diamond for the diamond shopkeeper when the ShopType enum contains all 5
+					rpc->updateDiscordRP("Shopping Around", "Tell the Geode devs to update their enums to see which shop this is!");
+				}
+				else {
+					rpc->updateDiscordRP("Shopping Around", orbs);
+				}
+		}
+
+		return true;
+	}
+};
+
+class $modify(GJGarageLayer) {
+	void onShards(CCObject* sender) {
+		rpc->updateDiscordRP("Browsing Menus", "Checking out shards");
+	}
+};
+
+class $modify(OptionsLayer) {
+	void onSecretVault(CCObject* sender) {
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string details = "";
+		std::string state = "";
+		if (shouldBeFunny) {
+			details = "Looking up answers on";
+			state = "the wiki with Spooky";
+		}
+		else {
+			details = "Browsing vaults";
+			state = "The Vault";
+		}
+		rpc->updateDiscordRP(details, state);
+		return OptionsLayer::onSecretVault(sender);
+	}
+};
+
+class $modify(SecretLayer4) {
+	bool init() {
+		if (!SecretLayer4::init()) return false;
+
+		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
+		std::string details = "";
+		std::string state = "";
+		if (shouldBeFunny) {
+			details = "Looking up answers on";
+			state = "the wiki with the Gatekeeper";
+		}
+		else {
+			details = "Browsing vaults";
+			state = "Chamber of Time";
+		}
+		rpc->updateDiscordRP(details, state);
+
+		return true;
 	}
 };
