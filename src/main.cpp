@@ -474,15 +474,25 @@ class $modify(MyPlayLayer, PlayLayer) {
 			bestString = std::to_string(m_level->m_normalPercent.value()) + "%";
 		}
 
-		std::string details = "Playing a";
+		std::string details = "Playing";
 		if (m_level->isPlatformer()) {
-			details = details + " platformer";
+			details = details + " a platformer";
 		}
 
 		bool isDaily = m_level->m_dailyID.value() != 0;
+		bool isDemon = m_level->m_demon.value() != 0;
 
 		if (isDaily) {
-			details = details + " daily";
+			if (isDemon) {
+				details = details + " the weekly";
+			}
+			else {
+				details = details + " the daily";
+			}
+		}
+
+		if (details == "Playing") {
+			details = "Playing a";
 		}
 
 		std::string detailsPercentString = "";
