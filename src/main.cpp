@@ -575,6 +575,7 @@ class $modify(GJGarageLayer) {
 	}
 };
 
+#ifdef GEODE_IS_WINDOWS
 class $modify(OptionsLayer) {
 	void onSecretVault(CCObject* sender) {
 		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
@@ -592,6 +593,7 @@ class $modify(OptionsLayer) {
 		return OptionsLayer::onSecretVault(sender);
 	}
 };
+#endif
 
 class $modify(SecretLayer4) {
 	bool init() {
