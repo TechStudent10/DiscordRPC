@@ -423,7 +423,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		auto showTotalTime = Mod::get()->getSettingValue<bool>("show-total-time");
 		std::string totalTime;
 		if (showTotalTime) {
-			totalTime = " (" + workingTime(m_level->m_workingTime) + ")";
+			totalTime = " (worked on for " + workingTime(m_level->m_workingTime) + ")";
 		}
 		rpc->updateDiscordRP(MODID, details, std::to_string(objectCount) + fmt::format(" objects{}", totalTime), "editor", "Editing a level", true);
 	}
