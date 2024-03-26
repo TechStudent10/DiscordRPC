@@ -2,6 +2,8 @@
 
 #include <discord_register.h>
 #include <discord_rpc.h>
+#include <string>
+#include <set>
 
 #ifdef GEODE_IS_WINDOWS
     #ifdef _DRPC_EXPORTING
@@ -15,10 +17,12 @@
 
 namespace gdrpc {
     class DRPC_DLL GDRPC {
-        public:
+    public:
+        std::set<std::string> mods;
         GDRPC() {};
         void initDiscordRP();
         void updateDiscordRP(
+            std::string modID,
             std::string details,
             std::string state = "",
             std::string smallImageKey = "",
@@ -27,6 +31,13 @@ namespace gdrpc {
             bool shouldResetTime = false,
             std::string largeImage = ""
         );
+        void registerMod(std::string modID) {
+            mods.insert(modID);
+        };
+        static GDRPC*& getSharedInstance() {
+            static GDRPC* instance = new GDRPC();
+            return instance;
+        };
     };
 } // namespace gdrpc
 

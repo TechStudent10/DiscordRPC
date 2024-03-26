@@ -17,7 +17,8 @@
 using namespace geode::prelude;
 using namespace gdrpc;
 
-auto rpc = new GDRPC();
+auto rpc = GDRPC::getSharedInstance();
+const std::string MODID = "techstudent10.discord_rich_presence";
 
 std::string convertGJDifficultyDemonToAssetKey(int difficulty) {
 	switch (difficulty) {
@@ -195,51 +196,52 @@ class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 		rpc->initDiscordRP();
-		rpc->updateDiscordRP("Browsing Menus", "Main Menu");
+		rpc->registerMod("techstudent10.discord_rich_presence");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Main Menu");
 
 		return true;
 	}
 
 	void onOptions(CCObject* sender) {
-		rpc->updateDiscordRP("Browsing Menus","Changing settings");
+		rpc->updateDiscordRP(MODID, "Browsing Menus","Changing settings");
 		return MenuLayer::onOptions(sender);
 	}
 
 	void onPlay(CCObject* sender) {
-		rpc->updateDiscordRP("Browsing main levels");
+		rpc->updateDiscordRP(MODID, "Browsing main levels");
 		return MenuLayer::onPlay(sender);
 	}
 
 	void onGarage(CCObject* sender) {
-		rpc->updateDiscordRP("Browsing Menus", "Character customization");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Character customization");
 		return MenuLayer::onGarage(sender);
 	}
 
 	void onAchievements(CCObject* sender) {
 		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
-		rpc->updateDiscordRP("Browsing Menus", shouldBeFunny ? "Wishing for the Creator Points UFO" : "Achievements");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", shouldBeFunny ? "Wishing for the Creator Points UFO" : "Achievements");
 	}
 };
 
 class $modify(CreatorLayer) {
 	bool init() {
 		if (!CreatorLayer::init()) return false;
-		rpc->updateDiscordRP("Browsing Menus", "Creator Tab");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Creator Tab");
 		return true;
 	}
 
 	void onLeaderboards(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out leaderboards");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out leaderboards");
 		return CreatorLayer::onLeaderboards(p0);
 	}
 
 	void onMyLevels(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out created levels");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out created levels");
 		return CreatorLayer::onMyLevels(p0);
 	}
 
 	void onSavedLevels(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out saved levels");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out saved levels");
 		return CreatorLayer::onSavedLevels(p0);
 	}
 
@@ -251,22 +253,22 @@ class $modify(CreatorLayer) {
 		} else {
 			state = "Checking out map packs";
 		}
-		rpc->updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP(MODID, "Browsing Menus", state);
 		return CreatorLayer::onMapPacks(p0);
 	}
 
 	void onDailyLevel(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the daily level");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the daily level");
 		return CreatorLayer::onDailyLevel(p0);
 	}
 
 	void onWeeklyLevel(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the weekly level");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the weekly level");
 		return CreatorLayer::onWeeklyLevel(p0);
 	}
 
 	void onFeaturedLevels(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the featured tab");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the featured tab");
 		return CreatorLayer::onFeaturedLevels(p0);
 	}
 
@@ -278,17 +280,17 @@ class $modify(CreatorLayer) {
 		} else {
 			state = "Checking out the gauntlets";
 		}
-		rpc->updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP(MODID, "Browsing Menus", state);
 		return CreatorLayer::onGauntlets(p0);
 	}
 
 	void onAdventureMap(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the map");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the map");
 		return CreatorLayer::onAdventureMap(p0);
 	}
 
 	void onEventLevel(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the event level");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the event level");
 		return CreatorLayer::onEventLevel(p0);
 	}
 
@@ -301,12 +303,12 @@ class $modify(CreatorLayer) {
 		else {
 			state = "Checking out versus mode";
 		}
-		rpc->updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP(MODID, "Browsing Menus", state);
 		return CreatorLayer::onMultiplayer(p0);
 	}
 	
 	void onPaths(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the paths");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the paths");
 		return CreatorLayer::onPaths(p0);
 	}
 
@@ -322,7 +324,7 @@ class $modify(CreatorLayer) {
 			details = "Browsing vaults";
 			state = "Vault of Secrets";
 		}
-		rpc->updateDiscordRP(details, state);
+		rpc->updateDiscordRP(MODID, details, state);
 		return CreatorLayer::onSecretVault(p0);
 	}
 
@@ -335,17 +337,17 @@ class $modify(CreatorLayer) {
 		else {
 			state = "Checking out lists";
 		}
-		rpc->updateDiscordRP("Browsing Menus", state);
+		rpc->updateDiscordRP(MODID, "Browsing Menus", state);
 		return CreatorLayer::onTopLists(p0);
 	}
 
 	void onTreasureRoom(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out the treasure room");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out the treasure room");
 		return CreatorLayer::onTreasureRoom(p0);
 	}
 
 	void onChallenge(CCObject* p0) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out quests"); 
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out quests"); 
 		return CreatorLayer::onChallenge(p0);
 	}
 };
@@ -353,7 +355,7 @@ class $modify(CreatorLayer) {
 class $modify(LevelSearchLayer) {
 	bool init(int p0) {
 		if (!LevelSearchLayer::init(p0)) return false;
-		rpc->updateDiscordRP("Browsing Menus", "Search Tab");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Search Tab");
 		return true;
 	}
 };
@@ -363,7 +365,7 @@ class $modify(LevelInfoLayer) {
 		if (!LevelInfoLayer::init(level, p1)) return false;
 		bool isRated = level->m_stars.value() != 0;
 		
-		rpc->updateDiscordRP(
+		rpc->updateDiscordRP(MODID, 
 			"Viewing Level",
 			std::string(level->m_levelName) + " by " + std::string(level->m_creatorName),
 			getAssetKey(level),
@@ -372,6 +374,23 @@ class $modify(LevelInfoLayer) {
 		return true;
 	}
 };
+
+// stolen, er, borrowed from BetterInfo (https://github.com/Cvolton/betterinfo-geode/blob/master/src/utils/TimeUtils.cpp)
+std::string workingTime(int value){
+    if(value < 0) return fmt::format("NA ({})", value);
+    if(value == 0) return "NA";
+
+    int hours = value / 3600;
+    int minutes = (value % 3600) / 60;
+    int seconds = value % 60;
+
+    std::ostringstream stream;
+    if(hours > 0) stream << hours << "h ";
+    if(minutes > 0) stream << minutes << "m ";
+    stream << seconds << "s";
+
+    return stream.str();
+}
 
 class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 	bool init(GJGameLevel* level, bool p0) {
@@ -401,7 +420,12 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		#ifdef GEODE_IS_MACOS
 		objectCount = m_level->m_objectCount;
 		#endif
-		rpc->updateDiscordRP(details, std::to_string(objectCount) + " objects", "editor", "Editing a level", true);
+		auto showTotalTime = Mod::get()->getSettingValue<bool>("show-total-time");
+		std::string totalTime;
+		if (showTotalTime) {
+			totalTime = " (" + workingTime(m_level->m_workingTime) + ")";
+		}
+		rpc->updateDiscordRP(MODID, details, std::to_string(objectCount) + fmt::format(" objects{}", totalTime), "editor", "Editing a level", true);
 	}
 };
 
@@ -474,7 +498,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 			bestString = std::to_string(m_level->m_normalPercent.value()) + "%";
 		}
 
-		std::string details = "Playing";
+		std::string details = (m_isPracticeMode ? "Practicing" : "Playing");
 		if (m_level->isPlatformer()) {
 			details = details + " a platformer";
 		}
@@ -504,7 +528,7 @@ class $modify(MyPlayLayer, PlayLayer) {
 		#endif
 		details = fmt::format("{} level{} (Best: {})", details, detailsPercentString, bestString);
 
-		rpc->updateDiscordRP(
+		rpc->updateDiscordRP(MODID, 
 			details,
 			state,
 			getAssetKey(m_level),
@@ -523,21 +547,21 @@ class $modify(GJShopLayer) {
 		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
 		switch(p0) {
 			case ShopType::Normal:
-				rpc->updateDiscordRP(shouldBeFunny ? "Shopping with Zolguroth" : "Shopping with the Shopkeeper", orbs);
+				rpc->updateDiscordRP(MODID, shouldBeFunny ? "Shopping with Zolguroth" : "Shopping with the Shopkeeper", orbs);
 				break;
 			case ShopType::Secret:
-				rpc->updateDiscordRP("Shopping with Scratch", orbs);
+				rpc->updateDiscordRP(MODID, "Shopping with Scratch", orbs);
 				break;
 			case ShopType::Community:
-				rpc->updateDiscordRP("Shopping with Potbor", orbs);
+				rpc->updateDiscordRP(MODID, "Shopping with Potbor", orbs);
 				break;
 			default:
 				if (shouldBeFunny) {
 					// ⬘ seems like the best unicode diamond for the diamond shopkeeper when the ShopType enum contains all 5
-					rpc->updateDiscordRP("Shopping Around", "Tell the Geode devs to update their enums to see which shop this is!");
+					rpc->updateDiscordRP(MODID, "Shopping Around", "At Walmart");
 				}
 				else {
-					rpc->updateDiscordRP("Shopping Around", orbs);
+					rpc->updateDiscordRP(MODID, "Shopping Around", orbs);
 				}
 		}
 
@@ -547,7 +571,7 @@ class $modify(GJShopLayer) {
 
 class $modify(GJGarageLayer) {
 	void onShards(CCObject* sender) {
-		rpc->updateDiscordRP("Browsing Menus", "Checking out shards");
+		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out shards");
 	}
 };
 
@@ -564,7 +588,7 @@ class $modify(OptionsLayer) {
 			details = "Browsing vaults";
 			state = "The Vault";
 		}
-		rpc->updateDiscordRP(details, state);
+		rpc->updateDiscordRP(MODID, details, state);
 		return OptionsLayer::onSecretVault(sender);
 	}
 };
@@ -584,7 +608,7 @@ class $modify(SecretLayer4) {
 			details = "Browsing vaults";
 			state = "Chamber of Time";
 		}
-		rpc->updateDiscordRP(details, state);
+		rpc->updateDiscordRP(MODID, details, state);
 
 		return true;
 	}

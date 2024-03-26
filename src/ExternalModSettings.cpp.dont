@@ -1,0 +1,89 @@
+#include <Geode/Geode.hpp>
+#include "ExternalModSettingsValue.hpp"
+
+using namespace geode::prelude;
+
+class ExternalModsSettingsNode : public SettingNode {
+    std::map<std::string, bool> m_enabled;
+protected:
+    bool init(ExternalModsSettingsValue* value, float width) {
+        if (!SettingNode::init(value)) return false;
+
+        this->setContentSize({ width, 45.f });
+
+        auto scrollView = ScrollLayer::create(this->getContentSize());
+        for (auto enabledPair : m_enabled) {
+            scrollView->m_contentLayer->addChild(
+                CCLabelBMFont::create(enabledPair.first.c_str(), "goldFont.fnt")
+            );
+        }
+
+        return true;
+    }
+public:
+    // When the user wants to save this setting value, this function is 
+    // called - this is where you should actually set the value of your 
+    // setting
+    void commit() override {
+        // Set the actual value
+
+        for (auto enabledPair : m_enabled) {
+            as<ExternalModsSettingsValue*>(m_value)->setEnabled(enabledPair.first, enabledPair.second);
+        };
+
+        // Let the UI know you have committed the value
+        this->dispatchCommitted();
+    }
+
+    // Geode calls this to query if the setting value has been changed, 
+    // and those changes haven't been committed 
+    bool hasUncommittedChanges() override {
+        bool isUncommitted = false;
+        for (auto enabledPair : m_enabled) {
+            auto savedVersion = as<ExternalModsSettingsValue*>(m_value)->getEnabled(enabledPair.first);
+            if (savedVersion != enabledPair.second) {
+                isUncommitted = true;
+                break;
+            }
+        }
+        return isUncommitted;
+    }
+
+    // Geode calls this to query if the setting has a value that is 
+    // different from its default value
+    bool hasNonDefaultValue() override {
+        bool isDefault = true;
+        for (auto enabledPair : m_enabled) {
+            if (enabledPair.second == false) {
+                isDefault = false;
+                break;
+            }
+        }
+        return !isDefault;
+    }
+
+    // Geode calls this to reset the setting's value back to default
+    void resetToDefault() override {
+        for (auto& enabledPair : m_enabled) {
+            enabledPair.second = true;
+        }
+    }
+
+    static ExternalModsSettingsNode* create(ExternalModsSettingsValue* value, float width) {
+        auto ret = new ExternalModsSettingsNode();
+        if (ret && ret->init(value, width)) {
+            ret->autorelease();
+            return ret;
+        }
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
+};
+
+SettingNode* ExternalModsSettingsValue::createNode(float width)  {
+    return ExternalModsSettingsNode::create(this, width);
+}
+
+$on_mod(Loaded) {
+    Mod::get()->addCustomSetting<ExternalModsSettingsValue>("other-mods", matjson::Object());
+};

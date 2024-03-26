@@ -33,6 +33,12 @@
 			"description": "This will show your current percent in a level while in a run (only Windows compatible)",
 			"type": "bool",
 			"default": true
+		},
+		"show-total-time": {
+			"name": "Show total time in editor",
+			"description": "Displays the amount of time you've spent working on the level in total across all sessions",
+			"default": true,
+			"type": "bool"
 		}
 	},
 	"repository": "https://github.com/TechStudent10/DiscordRPC",

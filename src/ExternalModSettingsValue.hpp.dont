@@ -1,0 +1,30 @@
+#include <Geode/Geode.hpp> 
+#include <Geode/loader/SettingNode.hpp>
+#include "../include/CustomPresense.hpp"
+
+using namespace geode::prelude;
+
+// auto rpc = gdrpc::GDRPC::getSharedInstance();
+
+class ExternalModsSettingsValue : public SettingValue {
+    matjson::Object enabled;
+public:
+    bool load(matjson::Value const& json) override {
+        enabled = json["enabled"].as_object();
+        return true;
+    }
+    bool save(matjson::Value& json) const override {
+        json = enabled;
+        return true;
+    }
+
+    void setEnabled(std::string modID, bool isEnabled) {
+        enabled[modID] = isEnabled;
+    }
+
+    bool getEnabled(std::string modID) {
+        return enabled[modID].as_bool();
+    }
+
+    SettingNode* createNode(float width) override;
+};

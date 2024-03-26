@@ -1,5 +1,7 @@
 #include "../include/CustomPresense.hpp"
+#include "Geode/loader/Log.hpp"
 #include <Geode/Geode.hpp>
+// #include <string>
 
 using namespace geode::prelude;
 
@@ -35,6 +37,7 @@ void gdrpc::GDRPC::initDiscordRP() {
 }
 
 void gdrpc::GDRPC::updateDiscordRP(
+	std::string modID,
     std::string details,
     std::string state,
     std::string smallImageKey,
@@ -43,6 +46,10 @@ void gdrpc::GDRPC::updateDiscordRP(
     bool shouldResetTime,
     std::string largeImage
 ) {
+	if (!(mods.contains(modID))) {
+		log::error("Mod with ID \"{}\" is not registered. Please register your mod with DiscordRPC before utilizing it (gdrpc::GDRPC::getSharedInstance()->registerMod(\"{}\")).", modID, modID);
+		return;
+	}
 	auto gm = GameManager::sharedState();
 	auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 	auto shouldShowTime = Mod::get()->getSettingValue<bool>("show-time");
