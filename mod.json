@@ -39,6 +39,12 @@
 			"description": "Displays the amount of time you've spent working on the level in total across all sessions",
 			"default": true,
 			"type": "bool"
+		},
+		"idling": {
+			"name": "Show idle status",
+			"description": "Will change your status to idle when GD is unfocused",
+			"type": "bool",
+			"default": true
 		}
 	},
 	"repository": "https://github.com/TechStudent10/DiscordRPC",

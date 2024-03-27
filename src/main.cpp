@@ -220,6 +220,7 @@ class $modify(MenuLayer) {
 	void onAchievements(CCObject* sender) {
 		auto shouldBeFunny = Mod::get()->getSettingValue<bool>("funny-mode");
 		rpc->updateDiscordRP(MODID, "Browsing Menus", shouldBeFunny ? "Wishing for the Creator Points UFO" : "Achievements");
+		MenuLayer::onAchievements(sender); // NetheriteMiner didn't test this one :()
 	}
 };
 
@@ -425,7 +426,17 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		if (showTotalTime) {
 			totalTime = " (worked on for " + workingTime(m_level->m_workingTime) + ")";
 		}
-		rpc->updateDiscordRP(MODID, details, std::to_string(objectCount) + fmt::format(" objects{}", totalTime), "editor", "Editing a level", true);
+		rpc->updateDiscordRP(
+			MODID,
+			details,
+			std::to_string(objectCount) + " objects{}",
+			"editor",
+			"Editing a level",
+			true,
+			false,
+			"",
+			m_level->m_workingTime
+		);
 	}
 };
 

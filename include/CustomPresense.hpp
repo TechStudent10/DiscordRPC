@@ -29,7 +29,8 @@ namespace gdrpc {
             std::string smallImageText = "",
             bool useTime = false,
             bool shouldResetTime = false,
-            std::string largeImage = ""
+            std::string largeImage = "",
+            int timeOffset = 0
         );
         void registerMod(std::string modID) {
             mods.insert(modID);

@@ -1,5 +1,5 @@
 #include "../include/CustomPresense.hpp"
-#include "Geode/loader/Log.hpp"
+#include "Geode/modify/AppDelegate.hpp"
 #include <Geode/Geode.hpp>
 // #include <string>
 
@@ -7,6 +7,23 @@ using namespace geode::prelude;
 
 static const char* APPLICATION_ID = "1178492879627366472";
 time_t currentTime = time(0);
+
+bool isIdling = false;
+
+class $modify(AppDelegate) {
+	void applicationDidEnterBackground() {
+		AppDelegate::applicationDidEnterBackground();
+		isIdling = true;
+		log::info("idle time");
+		gdrpc::GDRPC::getSharedInstance()->updateDiscordRP("techstudent10.discord_rich_presence", "idling");
+	}
+
+	void applicationWillEnterForeground() {
+		AppDelegate::applicationWillEnterForeground();
+		isIdling = false;
+	}
+};
+
 
 static void handleDiscordReady(const DiscordUser* user) {
 	log::info("Connected to Discord RPC");
@@ -44,7 +61,8 @@ void gdrpc::GDRPC::updateDiscordRP(
     std::string smallImageText,
     bool useTime,
     bool shouldResetTime,
-    std::string largeImage
+    std::string largeImage,
+	int timeOffset
 ) {
 	if (!(mods.contains(modID))) {
 		log::error("Mod with ID \"{}\" is not registered. Please register your mod with DiscordRPC before utilizing it (gdrpc::GDRPC::getSharedInstance()->registerMod(\"{}\")).", modID, modID);
@@ -54,25 +72,29 @@ void gdrpc::GDRPC::updateDiscordRP(
 	auto shouldShowSensitive = Mod::get()->getSettingValue<bool>("private-info");
 	auto shouldShowTime = Mod::get()->getSettingValue<bool>("show-time");
 	DiscordRichPresence discordPresence{};
-    discordPresence.details = details.c_str();
-    discordPresence.state = state.c_str();
     if (largeImage == "") {
         discordPresence.largeImageKey = "gd_large";
     } else {
         discordPresence.largeImageKey = largeImage.c_str();
     }
-	if (useTime && shouldShowTime) {
-		if (shouldResetTime) currentTime = time(0);
-		discordPresence.startTimestamp = currentTime;
-	}
-	if (shouldShowSensitive) {
-    	discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();
+	if (isIdling) {
+		discordPresence.details = "Idling";
+		if (shouldShowSensitive) {
+			discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();
+		} else {
+			discordPresence.largeImageText = fmt::format("Playing Geometry Dash on {}", GEODE_PLATFORM_NAME).c_str();
+		}
 	} else {
-		discordPresence.largeImageText = fmt::format("Playing Geometry Dash on {}", GEODE_PLATFORM_NAME).c_str();
-	}
-	if (smallImageKey != "") {
-		discordPresence.smallImageKey = smallImageKey.c_str();
-		discordPresence.smallImageText = smallImageText.c_str();
+		discordPresence.details = details.c_str();
+		discordPresence.state = state.c_str();
+		if (useTime && shouldShowTime) {
+			if (shouldResetTime) currentTime = time(0);
+			discordPresence.startTimestamp = currentTime - timeOffset;
+		}
+		if (smallImageKey != "") {
+			discordPresence.smallImageKey = smallImageKey.c_str();
+			discordPresence.smallImageText = smallImageText.c_str();
+		}
 	}
     discordPresence.instance = 0;
     Discord_UpdatePresence(&discordPresence);
