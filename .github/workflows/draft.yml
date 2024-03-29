@@ -3,6 +3,9 @@ name: Draft Release
 on:
     workflow_dispatch:
 
+permissions:
+    contents: write
+
 jobs:
     draft:
         name: Draft
