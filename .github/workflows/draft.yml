@@ -50,7 +50,7 @@ jobs:
                 7z x "./artifacts/Build Output.zip" -o"./"
             - name: Get Info
               id: info
-              run: python3 repo/.github/getInfo.py
+              run: python3 repo/.github/get-info.py
             - name: Create Draft Release
               uses: softprops/action-gh-release@v1
               env:
