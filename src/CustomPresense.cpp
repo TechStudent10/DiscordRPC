@@ -77,7 +77,7 @@ void gdrpc::GDRPC::updateDiscordRP(
     } else {
         discordPresence.largeImageKey = largeImage.c_str();
     }
-	if (isIdling) {
+	if (isIdling && Mod::get()->getSettingValue<bool>("idling")) {
 		discordPresence.details = "Idling";
 		if (shouldShowSensitive) {
 			discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();

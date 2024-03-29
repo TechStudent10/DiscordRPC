@@ -583,6 +583,7 @@ class $modify(GJShopLayer) {
 class $modify(GJGarageLayer) {
 	void onShards(CCObject* sender) {
 		rpc->updateDiscordRP(MODID, "Browsing Menus", "Checking out shards");
+		GJGarageLayer::onShards(sender);
 	}
 };
 
