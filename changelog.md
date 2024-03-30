@@ -1,4 +1,12 @@
 # Discord Rich Presence
+## v2.10.1
+* Quick hotfixes
+## v2.10.0
+* Major bugfixing
+## v2.9.0
+* Create changelog.md by [@coopeeo](https://github.com/coopeeo) in [#9](https://github.com/TechStudent10/DiscordRPC/pull/9)
+* Add several pages to rich presence by [@NetheriteMiner](https://github.com/NetheriteMiner) in [#12](https://github.com/TechStudent10/DiscordRPC/pull/12)
+* Fixed weekly detection and adjusted grammar by [@NetheriteMiner](https://github.com/NetheriteMiner) in [#13](https://github.com/TechStudent10/DiscordRPC/pull/13)
 ## v2.8.0
 * developers can use the API to add RPC to their own mods !!! (still in development)
 * spinoff level support
