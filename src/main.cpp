@@ -429,7 +429,7 @@ class $modify(MyLevelEditorLayer, LevelEditorLayer) {
 		rpc->updateDiscordRP(
 			MODID,
 			details,
-			std::to_string(objectCount) + " objects{}",
+			std::to_string(objectCount) + " objects",
 			"editor",
 			"Editing a level",
 			true,

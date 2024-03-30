@@ -13,9 +13,11 @@ bool isIdling = false;
 class $modify(AppDelegate) {
 	void applicationDidEnterBackground() {
 		AppDelegate::applicationDidEnterBackground();
-		isIdling = true;
-		log::info("idle time");
-		gdrpc::GDRPC::getSharedInstance()->updateDiscordRP("techstudent10.discord_rich_presence", "idling");
+		if (Mod::get()->getSettingValue<bool>("idling")) {
+			isIdling = true;
+			log::info("idle time");
+			gdrpc::GDRPC::getSharedInstance()->updateDiscordRP("techstudent10.discord_rich_presence", "idling");
+		}
 	}
 
 	void applicationWillEnterForeground() {
@@ -77,7 +79,7 @@ void gdrpc::GDRPC::updateDiscordRP(
     } else {
         discordPresence.largeImageKey = largeImage.c_str();
     }
-	if (isIdling && Mod::get()->getSettingValue<bool>("idling")) {
+	if (isIdling) {
 		discordPresence.details = "Idling";
 		if (shouldShowSensitive) {
 			discordPresence.largeImageText = fmt::format("{} (playing on {})", gm->m_playerName, GEODE_PLATFORM_NAME).c_str();
