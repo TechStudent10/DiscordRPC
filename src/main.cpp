@@ -1,4 +1,5 @@
 ﻿#include <Geode/Geode.hpp>
+#include <Geode/loader/Loader.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/CreatorLayer.hpp>
@@ -168,28 +169,53 @@ std::string getAssetKey(GJGameLevel* level) {
 	if (level->m_levelID.value() < 128 || level->m_levelID.value() == 3001) {
 		return convertRobTopLevelToAssetKey(level->m_levelID.value());
 	}
-
-	switch (stars) {
-		case 1:
-			return "auto";
-		case 2:
-			return "easy";
-		case 3:
-			return "normal";
-		case 4:
-			return "hard";
-		case 5:
-			return "hard";
-		case 6:
-			return "harder";
-		case 7:
-			return "harder";
-		case 8:
-			return "insane";
-		case 9:
-			return "insane";
+	if (Loader::get()->isModLoaded("uproxide.more_difficulties"))
+	{
+		switch (stars) {
+			case 1:
+				return "auto";
+			case 2:
+				return "easy";
+			case 3:
+				return "normal";
+			case 4:
+				return "casual";
+			case 5:
+				return "hard";
+			case 6:
+				return "harder";
+			case 7:
+				return "touch";
+			case 8:
+				return "insane";
+			case 9:
+				return "cruel";
+		}
+		return "na";
+	} else {
+		switch (stars) {
+			case 1:
+				return "auto";
+			case 2:
+				return "easy";
+			case 3:
+				return "normal";
+			case 4:
+				return "hard";
+			case 5:
+				return "hard";
+			case 6:
+				return "harder";
+			case 7:
+				return "harder";
+			case 8:
+				return "insane";
+			case 9:
+				return "insane";
+		}
+		return "na";
 	}
-	return "na";
+	
 }
 
 class $modify(MenuLayer) {
