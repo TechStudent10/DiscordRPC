@@ -4,6 +4,9 @@
 #include <discord_rpc.h>
 #include <string>
 #include <set>
+#include "Geode/modify/AppDelegate.hpp"
+#include <Geode/Geode.hpp>
+#include <Geode/loader/Dispatch.hpp>
 
 #ifdef GEODE_IS_WINDOWS
     #ifdef _DRPC_EXPORTING
@@ -30,7 +33,10 @@ namespace gdrpc {
             bool useTime = false,
             bool shouldResetTime = false,
             std::string largeImage = "",
-            int timeOffset = 0
+            int timeOffset = 0,
+            std::string joinSecret = "",
+            std::string largeImageText = "",
+            int partyMax = 30
         );
         void registerMod(std::string modID) {
             mods.insert(modID);
@@ -40,5 +46,7 @@ namespace gdrpc {
             return instance;
         };
     };
+
+    inline bool defaultRPCEnabled = true;
 } // namespace gdrpc
 

@@ -1,6 +1,6 @@
 # Discord Rich Presence
 ## v2.11.0
-* Added BetterDifficulties support! If you have the mod installed, the BD faces will display instead of their regular counterparts.
+* Added More Difficulties support! If you have the mod installed, the BD faces will display instead of their regular counterparts.
 ## v2.10.2
 * Bug fixes
 ## v2.10.1

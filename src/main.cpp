@@ -14,12 +14,45 @@
 #include <Geode/modify/SecretLayer4.hpp>
 
 #include "../include/CustomPresense.hpp"
+#include <Geode/loader/Dispatch.hpp>
+#include <matjson.hpp>
 
 using namespace geode::prelude;
 using namespace gdrpc;
 
+$execute {
+	using NewRPCFilter = geode::DispatchFilter<std::string>;
+	new EventListener<NewRPCFilter>([](std::string const& newRPCStr) {
+		log::info("event going off!");
+		log::info("{}", newRPCStr);
+		auto newRPC = matjson::parse(newRPCStr);
+		gdrpc::GDRPC::getSharedInstance()->updateDiscordRP(
+			newRPC["modID"].as_string(),
+			newRPC["details"].as_string(),
+			newRPC["state"].as_string(),
+			newRPC["smallImageKey"].as_string(),
+			newRPC["smallImageText"].as_string(),
+			newRPC["useTime"].as_bool(),
+			newRPC["shouldResetTime"].as_bool(),
+			newRPC["largeImageKey"].as_string(),
+			0,
+			newRPC["joinSecret"].as_string(),
+			newRPC["largeImageText"].as_string(),
+			newRPC["partyMax"].as_int()
+		);
+		return ListenerResult::Propagate;
+	}, NewRPCFilter("update_rpc"_spr));
+
+	using ToggleRPCFilter = geode::DispatchFilter<bool>;
+	new EventListener(+[](bool enabled) {
+		log::info("updating default rpc enabled to {}", enabled);
+		gdrpc::defaultRPCEnabled = enabled;
+		return ListenerResult::Propagate;
+	}, ToggleRPCFilter("set_default_rpc_enabled"_spr));
+};
+
 auto rpc = GDRPC::getSharedInstance();
-const std::string MODID = "techstudent10.discord_rich_presence";
+const std::string MODID = ""_spr;
 
 std::string convertGJDifficultyDemonToAssetKey(int difficulty) {
 	switch (difficulty) {
