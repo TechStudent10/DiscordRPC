@@ -1,13 +1,13 @@
 {
-	"geode": "2.0.0-beta.26",
+	"geode": "3.0.0-alpha.1",
 	"version": "v2.12.0",
 	"id": "techstudent10.discord_rich_presence",
 	"name": "Discord Rich Presence",
 	"developer": "TechStudent10",
 	"description": "A Discord Rich Presence mod for Geode",
 	"gd": {
-		"win": "2.204",
-		"mac": "2.200"
+		"win": "2.206",
+		"mac": "2.206"
 	},
 	"settings": {
 		"funny-mode": {

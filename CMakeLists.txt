@@ -25,9 +25,11 @@ else()
 endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
-target_include_directories(${PROJECT_NAME} PRIVATE 
+target_include_directories(${PROJECT_NAME} PRIVATE
     libs/discord-rpc/include
 )
+
+# CPMAddPackage("gh:yhirose/cpp-httplib#05f9f83")
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/extensions/libdiscord-rpc.a)
 else()
