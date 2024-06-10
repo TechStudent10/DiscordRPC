@@ -13,7 +13,7 @@ class $modify(AppDelegate) {
 		AppDelegate::applicationDidEnterBackground();
 		if (Mod::get()->getSettingValue<bool>("idling")) {
 			isIdling = true;
-			log::info("idle time");
+			// log::info("idle time");
 			gdrpc::GDRPC::getSharedInstance()->updateDiscordRP("techstudent10.discord_rich_presence", "idling");
 		}
 	}
@@ -89,9 +89,9 @@ void gdrpc::GDRPC::updateDiscordRP(
 	// 	log::error("Mod with ID \"{}\" is not registered. Please register your mod with DiscordRPC before utilizing it (gdrpc::GDRPC::getSharedInstance()->registerMod(\"{}\")).", modID, modID);
 	// 	return;
 	// }
-	log::info("hi hi id: {}", modID);
+	// log::info("hi hi id: {}", modID);
 	if (modID == ""_spr && gdrpc::defaultRPCEnabled == false) {
-		log::info("(ID: {}) Default RPC is **disabled**! Not updating RPC...", modID);
+		// log::info("(ID: {}) Default RPC is **disabled**! Not updating RPC...", modID);
 		return;
 	}
 	auto gm = GameManager::sharedState();
@@ -146,6 +146,6 @@ void gdrpc::GDRPC::updateDiscordRP(
 	}
     discordPresence.instance = 0;
     Discord_UpdatePresence(&discordPresence);
-	log::info("updated the rpc for mod id: {}", modID);
-	log::info("presence: {}", discordPresence.details);
+	// log::info("updated the rpc for mod id: {}", modID);
+	// log::info("presence: {}", discordPresence.details);
 }

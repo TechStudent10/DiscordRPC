@@ -17,14 +17,19 @@
 #include <Geode/loader/Dispatch.hpp>
 #include <matjson.hpp>
 
+// #include "./WineDRPCBridge.c"
+
 using namespace geode::prelude;
 using namespace gdrpc;
+
+// template <std::move_constructible T, std::move_constructible P = std::monostate>
+// class WineBridgeTask final;
 
 $execute {
 	using NewRPCFilter = geode::DispatchFilter<std::string>;
 	new EventListener<NewRPCFilter>([](std::string const& newRPCStr) {
-		log::info("event going off!");
-		log::info("{}", newRPCStr);
+		// log::info("event going off!");
+		// log::info("{}", newRPCStr);
 		auto newRPC = matjson::parse(newRPCStr);
 		gdrpc::GDRPC::getSharedInstance()->updateDiscordRP(
 			newRPC["modID"].as_string(),
@@ -45,7 +50,7 @@ $execute {
 
 	using ToggleRPCFilter = geode::DispatchFilter<bool>;
 	new EventListener(+[](bool enabled) {
-		log::info("updating default rpc enabled to {}", enabled);
+		// log::info("updating default rpc enabled to {}", enabled);
 		gdrpc::defaultRPCEnabled = enabled;
 		return ListenerResult::Propagate;
 	}, ToggleRPCFilter("set_default_rpc_enabled"_spr));
