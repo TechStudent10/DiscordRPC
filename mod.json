@@ -1,6 +1,6 @@
 {
-	"geode": "3.0.0-alpha.1",
-	"version": "v2.12.0",
+	"geode": "3.0.0-beta.1",
+	"version": "v2.12.1",
 	"id": "techstudent10.discord_rich_presence",
 	"name": "Discord Rich Presence",
 	"developer": "TechStudent10",
