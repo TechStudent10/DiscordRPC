@@ -91,7 +91,7 @@ void gdrpc::GDRPC::updateDiscordRP(
 	// }
 	// log::info("hi hi id: {}", modID);
 	if (modID == ""_spr && gdrpc::defaultRPCEnabled == false) {
-		// log::info("(ID: {}) Default RPC is **disabled**! Not updating RPC...", modID);
+		log::info("(ID: {}) Default RPC is **disabled**! Not updating RPC...", modID);
 		return;
 	}
 	auto gm = GameManager::sharedState();

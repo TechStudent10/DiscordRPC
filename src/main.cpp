@@ -27,23 +27,29 @@ using namespace gdrpc;
 
 $execute {
 	using NewRPCFilter = geode::DispatchFilter<std::string>;
-	new EventListener<NewRPCFilter>([](std::string const& newRPCStr) {
+	// log::info("{}", "set_default_rpc_enabled"_spr);
+	new EventListener<NewRPCFilter>(+[](std::string const& newRPCStr) {
 		// log::info("event going off!");
 		// log::info("{}", newRPCStr);
-		auto newRPC = matjson::parse(newRPCStr);
+		auto newRPCRes = matjson::parse(newRPCStr);
+		if (newRPCRes.isErr()) {
+			log::error("err updating rpc: {}", newRPCRes.err()->message);
+			return ListenerResult::Propagate;
+		}
+		auto newRPC = newRPCRes.unwrap();
 		gdrpc::GDRPC::getSharedInstance()->updateDiscordRP(
-			newRPC["modID"].as_string(),
-			newRPC["details"].as_string(),
-			newRPC["state"].as_string(),
-			newRPC["smallImageKey"].as_string(),
-			newRPC["smallImageText"].as_string(),
-			newRPC["useTime"].as_bool(),
-			newRPC["shouldResetTime"].as_bool(),
-			newRPC["largeImageKey"].as_string(),
+			newRPC["modID"].asString().unwrapOr(""),
+			newRPC["details"].asString().unwrapOr(""),
+			newRPC["state"].asString().unwrapOr(""),
+			newRPC["smallImageKey"].asString().unwrapOr(""),
+			newRPC["smallImageText"].asString().unwrapOr(""),
+			newRPC["useTime"].asBool().unwrapOr(false),
+			newRPC["shouldResetTime"].asBool().unwrapOr(false),
+			newRPC["largeImageKey"].asString().unwrapOr(""),
 			0,
-			newRPC["joinSecret"].as_string(),
-			newRPC["largeImageText"].as_string(),
-			newRPC["partyMax"].as_int()
+			newRPC["joinSecret"].asString().unwrapOr(""),
+			newRPC["largeImageText"].asString().unwrapOr(""),
+			newRPC["partyMax"].asInt().unwrapOr(1)
 		);
 		return ListenerResult::Propagate;
 	}, NewRPCFilter("update_rpc"_spr));
