@@ -23,13 +23,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:  
+        with:
           submodules: recursive
 
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
+          bindings: geode-sdk/bindings
+          bindings-ref: main
           combine: true
+          build-config: RelWithDebInfo
+          export-pdb: true
+          # sdk: nightly
           target: ${{ matrix.config.target }}
 
   package:
@@ -45,3 +50,18 @@ jobs:
         with:
           name: Build Output
           path: ${{ steps.build.outputs.build-output }}
+  
+  release:
+    name: Release the mod
+    runs-on: ubuntu-latest
+    needs: ['package']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hiimjustin000/release-geode-mod@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+          # replace: true
+          
