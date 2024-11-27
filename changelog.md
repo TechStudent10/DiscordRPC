@@ -1,4 +1,6 @@
 # Discord Rich Presence
+## v3.0.0 and v3.0.1
+* Update to Geode v4.0.0 and GD 2.2074
 ## v2.11.0
 * Added More Difficulties support! If you have the mod installed, the BD faces will display instead of their regular counterparts.
 ## v2.10.2
