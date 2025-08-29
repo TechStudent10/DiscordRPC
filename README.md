@@ -1,3 +1,8 @@
+# OUTDATED!!!
+This repo is OUTDATED and contains the older v3.0.1 version of DRPC. The newest version can be found [here](https://github.com/TechStudent10/discordrpc2). Below is the original README.
+
+---
+
 # Discord Rich Presence
 
 ## For Players
@@ -25,3 +30,4 @@ This massive jumble of spaghetti is what you're going to be using to update the 
 | `useTime`         | Whether to show the time since the last time reset                |
 | `shouldResetTime` | Whether to reset the time                                         |
 | `largeImage`      | The key (name) for the large image (typically left as `gd_large`) |
+
